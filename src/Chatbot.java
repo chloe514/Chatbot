@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.util.Random;
 
 public class Chatbot {
 
@@ -9,7 +8,7 @@ public class Chatbot {
 
         // Call methods to interact with the user
         greetUser();
-        askName(scanner);
+        String name = askAndRepeatName(scanner); // Capture the user's name and ask to repeat
         guessAge(scanner);
         countToNumber(scanner);
         testProgrammingKnowledge(scanner);
@@ -26,37 +25,67 @@ public class Chatbot {
     }
 
     /**
-     * Method to ask the user for their name and acknowledge it.
+     * Method to ask the user for their name and then ask them to repeat it.
      * @param scanner Scanner object to read user input
+     * @return The user's name
      */
-    public static void askName(Scanner scanner) {
-        // Prompt user for their name
+    public static String askAndRepeatName(Scanner scanner) {
         System.out.println("Please tell me your name:");
-        // Read the name input from the user
         String name = scanner.nextLine();
-        // Acknowledge the user's name
-        System.out.println("Nice to meet you, " + name + "!");
+
+        System.out.println("Can you please repeat your name?");
+        String repeatedName = scanner.nextLine();
+
+        if (repeatedName.equals(name)) {
+            System.out.println("Nice to meet you, " + repeatedName + "!");
+        } else {
+            System.out.println("It seems there was a mistake. Your original name was " + name + ".");
+        }
+
+        return name;
     }
 
     /**
-     * Method to guess the user's age based on their preferences.
+     * Method to guess the user's age based on their responses.
      * @param scanner Scanner object to read user input
      */
     public static void guessAge(Scanner scanner) {
         System.out.println("I will try to guess your age. Answer the following questions:");
 
-        // Ask the user about their seasonal preference
-        System.out.println("Do you prefer summer or winter? (summer/winter)");
-        String season = scanner.nextLine();
+        // Ask the user about rotary phone
+        System.out.println("Do you remember using a rotary phone? (yes/no)");
+        String phone = scanner.nextLine().trim().toLowerCase();
 
-        // Ask the user about their drink preference
-        System.out.println("Do you prefer coffee or tea? (coffee/tea)");
-        String drink = scanner.nextLine();
+        // Ask the user about their high school graduation year
+        System.out.println("What year did you graduate high school?");
+        int graduationYear = getValidYear(scanner);
 
-        // Generate a random age guess between 10 and 40
-        int ageGuess = new Random().nextInt(30) + 10;
+        // Generate a random age guess based on the graduation year
+        int currentYear = 2024; // You might want to update this based on the current year
+        int ageGuess = currentYear - graduationYear;
+
         // Display the age guess to the user
         System.out.println("I guess you are around " + ageGuess + " years old!");
+    }
+
+    /**
+     * Method to get a valid graduation year from the user.
+     * @param scanner Scanner object to read user input
+     * @return Valid graduation year
+     */
+    private static int getValidYear(Scanner scanner) {
+        int year = -1;
+        while (year < 1900 || year > 2024) { // Assuming graduation year should be in this range
+            System.out.println("Please enter a valid graduation year (between 1900 and 2024):");
+            if (scanner.hasNextInt()) {
+                year = scanner.nextInt();
+                scanner.nextLine(); // Clear the buffer
+            } else {
+                scanner.next(); // Clear invalid input
+                System.out.println("Invalid input. Please enter a number.");
+            }
+        }
+        return year;
     }
 
     /**
@@ -64,19 +93,17 @@ public class Chatbot {
      * @param scanner Scanner object to read user input
      */
     public static void countToNumber(Scanner scanner) {
-        // Prompt the user to enter a number
         System.out.println("Enter a number, and I will count to it:");
-        // Read the number input from the user
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a valid number:");
+            scanner.next(); // Clear invalid input
+        }
         int number = scanner.nextInt();
-
-        // Display the counting process
         System.out.println("Counting to " + number + ":");
         for (int i = 1; i <= number; i++) {
             System.out.println(i);
         }
-    }
-
-    public Chatbot() {
+        scanner.nextLine(); // Clear the buffer after nextInt()
     }
 
     /**
@@ -84,11 +111,9 @@ public class Chatbot {
      * @param scanner Scanner object to read user input
      */
     public static void testProgrammingKnowledge(Scanner scanner) {
-        // Correct answer for the multiple-choice question
         String correctAnswer = "B";
         String userAnswer;
 
-        // Introduction to the programming knowledge test
         System.out.println("Let's test your programming knowledge!");
         System.out.println("Which keyword is used to define a class in Java?");
         System.out.println("A. method");
@@ -96,19 +121,21 @@ public class Chatbot {
         System.out.println("C. function");
         System.out.println("D. object");
 
-        // Loop until the user provides the correct answer
         do {
             System.out.println("Enter your answer (A, B, C, or D):");
-            userAnswer = scanner.nextLine().toUpperCase();
+            userAnswer = scanner.nextLine().trim().toUpperCase();
 
-            // Check if the user's answer is correct
             if (!userAnswer.equals(correctAnswer)) {
                 System.out.println("Incorrect. Try again.");
             }
         } while (!userAnswer.equals(correctAnswer));
 
-        // Inform the user that they answered correctly
         System.out.println("Correct! The keyword to define a class in Java is 'class'.");
     }
 }
+
+
+
+
+
 
